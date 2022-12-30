@@ -25,13 +25,14 @@ Saving the userdata, world and more has to be handled by a plugin.
 Maven:
 ```sh
 <dependency>
-            <groupId>com.uroria</groupId>
-            <artifactId>Kebab</artifactId>
-            <version>VERSION</version>
-            <scope>system</scope>
-            <systemPath>PATH/TO/THE/JAR</systemPath>
+     <groupId>com.uroria</groupId>
+     <artifactId>Kebab</artifactId>
+     <version>VERSION</version>
+     <scope>system</scope>
+     <systemPath>PATH/TO/THE/JAR</systemPath>
 </dependency>
 ```
+Make sure to replace "VERSION" and "PATH/TO/THE/JAR" with the right information!
 
 ## Build Kebab
 
