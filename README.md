@@ -18,7 +18,7 @@ mob AIs, user saving and more. To get all these features you need to built your 
 run them on your Kebab server. If you stop a Kebab server, any data on the server will get lost.
 Saving the userdata, world and more has to be handled by a plugin.
 
-##Build Kebab
+## Build Kebab
 
 1. Clone repository
 2. Run "mvn clean package" in order to build the project
