@@ -28,3 +28,4 @@ git clone https://github.com/Uroria/KebabServer/archive/refs/heads/main.zip .
 ```sh
 mvn clean package
 ```
+3. If the project was build successfully, you will find the final .jar in ./target
