@@ -18,6 +18,21 @@ mob AIs, user saving and more. To get all these features you need to built your 
 run them on your Kebab server. If you stop a Kebab server, any data on the server will get lost.
 Saving the userdata, world and more has to be handled by a plugin.
 
+## API
+
+### The API is currently only available thru the server jar file
+
+Maven:
+```sh
+<dependency>
+            <groupId>com.uroria</groupId>
+            <artifactId>Kebab</artifactId>
+            <version>VERSION</version>
+            <scope>system</scope>
+            <systemPath>PATH/TO/THE/JAR</systemPath>
+</dependency>
+```
+
 ## Build Kebab
 
 1. Install Git if not already installed and clone the Kebab repo into a folder
