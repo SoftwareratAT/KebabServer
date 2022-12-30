@@ -110,7 +110,8 @@ public class ClientConnection extends Thread {
     }
 
     public void sendPluginMessage(String channel, byte[] data) throws IOException {
-
+        PacketPlayOutPluginMessaging packet = new PacketPlayOutPluginMessaging(channel, data);
+        sendPacket(packet);
     }
 
     public synchronized void sendPacket(PacketOut packet) throws IOException {

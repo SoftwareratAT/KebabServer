@@ -1,10 +1,13 @@
 package com.uroria.kebab;
 
 import com.uroria.kebab.events.EventManager;
+import com.uroria.kebab.events.KebabEventManager;
 import com.uroria.kebab.file.FileConfiguration;
 import com.uroria.kebab.logger.ConsoleLogger;
+import com.uroria.kebab.logger.Logger;
 import com.uroria.kebab.network.ServerConnection;
 import com.uroria.kebab.plugins.KebabPlugin;
+import com.uroria.kebab.plugins.KebabPluginManager;
 import com.uroria.kebab.plugins.PluginManager;
 import com.uroria.kebab.scheduling.KebabScheduler;
 import com.uroria.kebab.scheduling.Tick;
@@ -51,8 +54,8 @@ public final class KebabServer {
     private final File pluginFolder;
     private final File internalDataFolder;
     private final Tick tick;
-    private final PluginManager pluginManager;
-    private final EventManager eventManager;
+    private final KebabPluginManager pluginManager;
+    private final KebabEventManager eventManager;
     private final AtomicInteger entityIdCount = new AtomicInteger();
 
     public KebabServer() throws IOException, NumberFormatException, ClassNotFoundException, InterruptedException {
@@ -64,16 +67,16 @@ public final class KebabServer {
         this.pluginFolder = new File("plugins");
         this.internalDataFolder = new File("internal_data");
         this.tick = new Tick(this);
-        this.pluginManager = new PluginManager(this.pluginFolder);
+        this.pluginManager = new KebabPluginManager(this.pluginFolder);
         try {
-            Method loadPluginsMethod = PluginManager.class.getDeclaredMethod("loadPlugins");
+            Method loadPluginsMethod = KebabPluginManager.class.getDeclaredMethod("loadPlugins");
             loadPluginsMethod.setAccessible(true);
             loadPluginsMethod.invoke(this.pluginManager);
             loadPluginsMethod.setAccessible(false);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
             getLogger().error("Error while trying to load plugins", exception);
         }
-        this.eventManager = new EventManager();
+        this.eventManager = new KebabEventManager();
         this.server = new ServerConnection(this.serverConfig.get("server-ip", String.class), this.serverConfig.get("server-port", Integer.class));
         getLogger().info("Server online!");
         getLogger().info("Running on " + this.serverConfig.get("server-ip", String.class) + " on port " + this.serverConfig.get("server-port", Integer.class));
@@ -110,7 +113,7 @@ public final class KebabServer {
         return this.pluginManager;
     }
 
-    public ConsoleLogger getLogger() {
+    public Logger getLogger() {
         return this.consoleLogger;
     }
 

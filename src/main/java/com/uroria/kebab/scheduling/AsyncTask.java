@@ -1,7 +1,7 @@
 package com.uroria.kebab.scheduling;
 
 import com.uroria.kebab.KebabServer;
-import com.uroria.kebab.logger.ConsoleLogger;
+import com.uroria.kebab.logger.Logger;
 import jdk.internal.net.http.common.Pair;
 
 import java.util.concurrent.*;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public final class AsyncTask<T> {
     private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(0);
-    private final ConsoleLogger logger = KebabServer.getInstance().getLogger();
+    private final Logger logger = KebabServer.getInstance().getLogger();
 
     private final Function<Integer, ? extends T> function;
     private final Executor backSync;

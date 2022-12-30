@@ -121,6 +121,11 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     }
 
     @Override
+    public void sendPluginMessage(String channel, byte[] data) throws IOException {
+        this.clientConnection.sendPluginMessage(channel, data);
+    }
+
+    @Override
     public String getName() {
         return this.userName;
     }
@@ -133,6 +138,15 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     @Override
     public void teleport(Location location) {
         //TODO TELEPORT METHOD
+    }
+
+    @Override
+    public void sendServerBrand(Component brand) {
+        try {
+            this.clientConnection.sendServerBrand(brand);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     protected void setLocation(Location location) {
