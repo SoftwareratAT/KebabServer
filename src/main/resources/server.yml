@@ -1,0 +1,27 @@
+#Server max players, -1 for no limit
+max-players: -1
+
+#Server port
+server-port: 25565
+
+#Server ip, localhost for local access only
+server-ip: "0.0.0.0"
+
+#World Name and the schematic file containing map
+level-name: "world;spawn.schem"
+
+#Dimension, "minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"
+level-dimension: "minecraft:overworld"
+
+#Gamemode, survival, creative, adventure, spectator
+default-gamemode: "survival"
+
+#Spawn location
+world-spawn: "world;0;0;0;-90;0"
+
+#View distance of the server
+view-distance: 6
+
+#Ticks per second of the server
+ticks-per-second: 15
+
