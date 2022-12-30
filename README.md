@@ -21,10 +21,10 @@ Saving the userdata, world and more has to be handled by a plugin.
 ## Build Kebab
 
 1. Install Git if not already installed and clone the Kebab repo into a folder
-'''sh
+```sh
 git clone https://github.com/Uroria/KebabServer/archive/refs/heads/main.zip .
-'''
+```
 2. Install Maven if not already installed and build the project
-'''sh
+```sh
 mvn clean package
-'''
+```
