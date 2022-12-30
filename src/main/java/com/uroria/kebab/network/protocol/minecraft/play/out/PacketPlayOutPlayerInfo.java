@@ -12,7 +12,7 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PacketPlayOutPlayerInfo extends PacketOut {
+public final class PacketPlayOutPlayerInfo extends PacketOut {
     public static final byte PACKET_ID = 0x36;
 
     public enum PlayerInfoAction {

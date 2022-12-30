@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PacketPlayOutDeclareCommands extends PacketOut {
+public final class PacketPlayOutDeclareCommands extends PacketOut {
     public static final byte PACKET_ID = 0x0E;
 
     private final byte[] data;

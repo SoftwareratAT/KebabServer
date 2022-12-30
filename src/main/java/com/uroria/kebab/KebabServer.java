@@ -6,16 +6,20 @@ import com.uroria.kebab.file.FileConfiguration;
 import com.uroria.kebab.logger.ConsoleLogger;
 import com.uroria.kebab.logger.Logger;
 import com.uroria.kebab.network.ServerConnection;
+import com.uroria.kebab.player.KebabPlayer;
 import com.uroria.kebab.plugins.KebabPlugin;
 import com.uroria.kebab.plugins.KebabPluginManager;
 import com.uroria.kebab.plugins.PluginManager;
 import com.uroria.kebab.scheduling.KebabScheduler;
 import com.uroria.kebab.scheduling.Tick;
+import com.uroria.kebab.world.World;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -57,16 +61,24 @@ public final class KebabServer {
     private final KebabPluginManager pluginManager;
     private final KebabEventManager eventManager;
     private final AtomicInteger entityIdCount = new AtomicInteger();
+    private final Collection<KebabPlayer> players;
+    private final Collection<World> worlds;
 
     public KebabServer() throws IOException, NumberFormatException, ClassNotFoundException, InterruptedException {
+        System.out.println("Running Kebab server " + SERVER_VERSION + ", Protocol " + SERVER_PROTOCOL);
         this.running = new AtomicBoolean(true);
         this.consoleLogger = new ConsoleLogger();
         getLogger().info("Booting up...");
         this.scheduler = new KebabScheduler();
         this.serverConfig = new FileConfiguration(new File("server.yml"));
+        int tps = this.serverConfig.get("ticks-per-second", Integer.class);
+        if (tps == 0) {
+            getLogger().error("TPS null! Using a tps of 10 now!");
+            tps = 10;
+        }
         this.pluginFolder = new File("plugins");
-        this.internalDataFolder = new File("internal_data");
-        this.tick = new Tick(this);
+        this.internalDataFolder = new File("internal_data");;
+        this.tick = new Tick(this, tps);
         this.pluginManager = new KebabPluginManager(this.pluginFolder);
         try {
             Method loadPluginsMethod = KebabPluginManager.class.getDeclaredMethod("loadPlugins");
@@ -78,6 +90,8 @@ public final class KebabServer {
         }
         this.eventManager = new KebabEventManager();
         this.server = new ServerConnection(this.serverConfig.get("server-ip", String.class), this.serverConfig.get("server-port", Integer.class));
+        this.players = new ArrayList<>();
+        this.worlds = new ArrayList<>();
         getLogger().info("Server online!");
         getLogger().info("Running on " + this.serverConfig.get("server-ip", String.class) + " on port " + this.serverConfig.get("server-port", Integer.class));
     }
@@ -123,5 +137,13 @@ public final class KebabServer {
 
     public EventManager getEventManager() {
         return this.eventManager;
+    }
+
+    public Collection<KebabPlayer> getPlayers() {
+        return this.players;
+    }
+
+    public Collection<World> getWorlds() {
+        return this.worlds;
     }
 }

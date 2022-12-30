@@ -9,7 +9,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class PacketPlayOutSpawnEntity extends PacketOut {
+public final class PacketPlayOutSpawnEntity extends PacketOut {
+    public static final byte PACKET_ID = 0x00;
+
     private final int entityId;
     private final UUID uuid;
     private final EntityType type;

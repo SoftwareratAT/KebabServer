@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class PacketPlayOutTabComplete extends PacketOut {
+public final class PacketPlayOutTabComplete extends PacketOut {
+    public static final byte PACKET_ID = 0x0D;
+
     private final int id;
     private final int start;
     private final int length;
@@ -44,7 +46,7 @@ public class PacketPlayOutTabComplete extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x0D);
+        output.writeByte(PACKET_ID);
         DataTypeIO.writeVarInt(output, id);
         DataTypeIO.writeVarInt(output, start);
         DataTypeIO.writeVarInt(output, length);

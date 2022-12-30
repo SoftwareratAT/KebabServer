@@ -6,7 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ClientboundSetTitlesAnimationPacket extends PacketOut {
+public final class ClientboundSetTitlesAnimationPacket extends PacketOut {
+    public static final byte PACKET_ID = 0x5C;
+
     private final int fadeIn;
     private final int stay;
     private final int fadeOut;
@@ -32,7 +34,7 @@ public class ClientboundSetTitlesAnimationPacket extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x5C);
+        output.writeByte(PACKET_ID);
         output.writeInt(fadeIn);
         output.writeInt(stay);
         output.writeInt(fadeOut);

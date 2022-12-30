@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PacketPlayOutPlayerAbilities extends PacketOut {
+public final class PacketPlayOutPlayerAbilities extends PacketOut {
     public static final byte PACKET_ID = 0x30;
 
     public enum PlayerAbilityFlags {

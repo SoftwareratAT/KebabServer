@@ -10,7 +10,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class ClientboundSetSubtitleTextPacket extends PacketOut {
+public final class ClientboundSetSubtitleTextPacket extends PacketOut {
+    public static final byte PACKET_ID = 0x59;
+
     private final Component subtitle;
     public ClientboundSetSubtitleTextPacket(Component subtitle) {
         this.subtitle = subtitle;
@@ -24,7 +26,7 @@ public class ClientboundSetSubtitleTextPacket extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x59);
+        output.writeByte(PACKET_ID);
         DataTypeIO.writeString(output, GsonComponentSerializer.gson().serialize(subtitle), StandardCharsets.UTF_8);
         return buffer.toByteArray();
     }

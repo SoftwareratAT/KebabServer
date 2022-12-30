@@ -6,7 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PacketPlayOutUnloadChunk extends PacketOut {
+public final class PacketPlayOutUnloadChunk extends PacketOut {
+    public static final byte PACKET_ID = 0x1B;
+
     private final int chunkX;
     private final int chunkZ;
     public PacketPlayOutUnloadChunk(int chunkX, int chunkZ) {
@@ -26,7 +28,7 @@ public class PacketPlayOutUnloadChunk extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x1B);
+        output.writeByte(PACKET_ID);
         output.writeInt(chunkX);
         output.writeInt(chunkZ);
         return buffer.toByteArray();

@@ -10,9 +10,9 @@ public final class Tick {
     private int tickingInterval;
     private final AtomicLong tick = new AtomicLong(0);
 
-    public Tick(KebabServer instance) {
+    public Tick(KebabServer instance, int tps) {
         new Thread(() -> {
-            tickingInterval = (int) Math.round(1000.0 / Limbo.getInstance().getServerProperties().getDefinedTicksPerSecond());
+            tickingInterval = (int) Math.round(1000.0 / tps);
 
             while (instance.isRunning()) {
                 long start = System.currentTimeMillis();
@@ -26,11 +26,11 @@ public final class Tick {
                         }
                     }
                 });
-                instance.getWorlds().forEach(each -> {
+                instance.getWorlds().forEach(world -> {
                     try {
-                        each.update();
-                    } catch (IllegalArgumentException | IllegalAccessException e) {
-                        e.printStackTrace();
+                        world.update();
+                    } catch (IllegalArgumentException | IllegalAccessException exception) {
+                        exception.printStackTrace();
                     }
                 });
 

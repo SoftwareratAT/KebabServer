@@ -41,7 +41,7 @@ public class Environment {
         return key;
     }
 
-    public boolean isHasSkyLight() {
+    public boolean hasSkyLight() {
         return hasSkyLight;
     }
 

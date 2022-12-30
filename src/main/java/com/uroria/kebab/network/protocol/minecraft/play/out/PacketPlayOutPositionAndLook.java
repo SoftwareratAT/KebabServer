@@ -7,12 +7,11 @@ import com.uroria.kebab.utils.DataTypeIO;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PacketPlayOutPositionAndLook extends PacketOut {
+public final class PacketPlayOutPositionAndLook extends PacketOut {
     public static final byte PACKET_ID = 0x38;
 
     public enum PlayerTeleportFlags {

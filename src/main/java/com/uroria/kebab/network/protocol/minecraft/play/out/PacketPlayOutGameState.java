@@ -7,7 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PacketPlayOutGameState extends PacketOut {
+public final class PacketPlayOutGameState extends PacketOut {
+    public static final byte PACKET_ID = 0x1C;
+
     private final int reason;
     private final float value;
 
@@ -33,7 +35,7 @@ public class PacketPlayOutGameState extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x1C);
+        output.writeByte(PACKET_ID);
         output.writeByte(reason);
         output.writeFloat(value);
         return buffer.toByteArray();

@@ -10,7 +10,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class PacketPlayOutDisconnect extends PacketOut {
+public final class PacketPlayOutDisconnect extends PacketOut {
+    public static final byte PACKET_ID = 0x17;
+
     private final Component reason;
     public PacketPlayOutDisconnect(Component reason) {
         this.reason = reason;
@@ -24,7 +26,7 @@ public class PacketPlayOutDisconnect extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x17);
+        output.writeByte(PACKET_ID);
         DataTypeIO.writeString(output, GsonComponentSerializer.gson().serialize(reason), StandardCharsets.UTF_8);
         return buffer.toByteArray();
     }

@@ -10,7 +10,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class PacketPlayOutStopSound extends PacketOut {
+public final class PacketPlayOutStopSound extends PacketOut {
+    public static final byte PACKET_ID = 0x5F;
+
     private final Key sound;
     private final Sound.Source source;
 
@@ -31,7 +33,7 @@ public class PacketPlayOutStopSound extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x5F);
+        output.writeByte(PACKET_ID);
         if (source != null) {
             if (sound != null) {
                 output.writeByte(3);

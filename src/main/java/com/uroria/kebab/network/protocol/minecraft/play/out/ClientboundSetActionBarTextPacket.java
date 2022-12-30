@@ -10,7 +10,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class ClientboundSetActionBarTextPacket extends PacketOut {
+public final class ClientboundSetActionBarTextPacket extends PacketOut {
+    public static final byte PACKET_ID = 0x42;
+
     private final Component actionBar;
 
     public ClientboundSetActionBarTextPacket(Component actionBar) {
@@ -25,7 +27,7 @@ public class ClientboundSetActionBarTextPacket extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x42);
+        output.writeByte(PACKET_ID);
         DataTypeIO.writeString(output, GsonComponentSerializer.gson().serialize(actionBar), StandardCharsets.UTF_8);
         return buffer.toByteArray();
     }

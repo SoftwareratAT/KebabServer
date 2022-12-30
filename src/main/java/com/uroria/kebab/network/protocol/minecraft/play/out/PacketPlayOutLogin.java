@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class PacketPlayOutLogin extends PacketOut {
+public final class PacketPlayOutLogin extends PacketOut {
     public static final byte PACKET_ID = 0x24;
 
     private final int entityId;

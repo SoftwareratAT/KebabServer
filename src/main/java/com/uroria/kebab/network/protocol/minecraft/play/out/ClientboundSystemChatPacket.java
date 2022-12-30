@@ -10,7 +10,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class ClientboundSystemChatPacket extends PacketOut {
+public final class ClientboundSystemChatPacket extends PacketOut {
+    public static final byte PACKET_ID = 0x60;
+
     private final Component message;
     private final boolean overlay;
     public ClientboundSystemChatPacket(Component message, boolean overlay) {
@@ -30,7 +32,7 @@ public class ClientboundSystemChatPacket extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x60);
+        output.writeByte(PACKET_ID);
         DataTypeIO.writeString(output, GsonComponentSerializer.gson().serialize(message), StandardCharsets.UTF_8);
         output.writeBoolean(this.overlay);
         return buffer.toByteArray();

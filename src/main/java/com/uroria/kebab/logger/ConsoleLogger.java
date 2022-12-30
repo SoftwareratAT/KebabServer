@@ -1,28 +1,43 @@
 package com.uroria.kebab.logger;
 
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public final class ConsoleLogger implements com.uroria.kebab.logger.Logger {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleLogger.class);
+public final class ConsoleLogger implements Logger {
+    private enum Level {
+        INFO("[INFO]"),
+        WARNING("[WARNING]"),
+        ERROR("[ERROR]");
+
+        private final String prefix;
+
+        Level(String levelPrefix) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss");
+            LocalDateTime currentTime = LocalDateTime.now();
+            String time = formatter.format(currentTime);
+            this.prefix = time + " " + levelPrefix;
+        }
+    }
 
     @Override
     public void info(String text) {
-        LOGGER.debug(text);
+        System.out.println(Level.INFO.prefix + " " + text);
+
     }
 
     @Override
     public void warn(String text) {
-        LOGGER.warn(text);
+        System.out.println(Level.WARNING.prefix + " " + text);
     }
 
     @Override
     public void error(String text) {
-        LOGGER.error(text);
+        error(text, null);
     }
 
     @Override
     public void error(String text, Throwable throwable) {
-        LOGGER.error(text, throwable);
+        System.out.println(Level.ERROR.prefix + " " + text);
+        if (throwable != null) throwable.printStackTrace();
     }
 }

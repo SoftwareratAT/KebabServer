@@ -6,7 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PacketPlayOutWindowData extends PacketOut {
+public final class PacketPlayOutWindowData extends PacketOut {
+    public static final byte PACKET_ID = 0x11;
+
     private final int containerId;
     private final int id;
     private final int value;
@@ -33,7 +35,7 @@ public class PacketPlayOutWindowData extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x11);
+        output.writeByte(PACKET_ID);
         output.writeByte(containerId);
         output.writeShort(id);
         output.writeShort(value);

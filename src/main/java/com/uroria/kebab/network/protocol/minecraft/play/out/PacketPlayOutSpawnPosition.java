@@ -8,7 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PacketPlayOutSpawnPosition extends PacketOut {
+public final class PacketPlayOutSpawnPosition extends PacketOut {
+    public static final byte PACKET_ID = 0x4C;
+
     private final BlockPosition position;
     private final float angle;
 
@@ -29,7 +31,7 @@ public class PacketPlayOutSpawnPosition extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x4C);
+        output.writeByte(PACKET_ID);
         DataTypeIO.writeBlockPosition(output, position);
         output.writeFloat(angle);
         return buffer.toByteArray();

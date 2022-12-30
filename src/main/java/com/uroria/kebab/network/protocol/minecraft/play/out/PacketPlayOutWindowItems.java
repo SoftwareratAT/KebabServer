@@ -9,7 +9,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class PacketPlayOutWindowItems extends PacketOut {
+public final class PacketPlayOutWindowItems extends PacketOut {
+    public static final byte PACKET_ID = 0x10;
+
     private final int containerId;
     private final int stateId;
     private final List<ItemStack> items;
@@ -42,7 +44,7 @@ public class PacketPlayOutWindowItems extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x10);
+        output.writeByte(PACKET_ID);
         output.writeByte(containerId);
         DataTypeIO.writeVarInt(output, stateId);
         DataTypeIO.writeVarInt(output, items.size());

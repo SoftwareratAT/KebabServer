@@ -7,7 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PacketPlayOutUpdateViewPosition extends PacketOut {
+public final class PacketPlayOutUpdateViewPosition extends PacketOut {
+    public static final byte PACKET_ID = 0x4A;
+
     private final int chunkX;
     private final int chunkZ;
 
@@ -28,7 +30,7 @@ public class PacketPlayOutUpdateViewPosition extends PacketOut {
     public byte[] serializePacket() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(buffer);
-        output.writeByte(0x4A);
+        output.writeByte(PACKET_ID);
         DataTypeIO.writeVarInt(output, chunkX);
         DataTypeIO.writeVarInt(output, chunkZ);
         return buffer.toByteArray();
