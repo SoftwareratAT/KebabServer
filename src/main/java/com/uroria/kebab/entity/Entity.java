@@ -3,6 +3,8 @@ package com.uroria.kebab.entity;
 import com.uroria.kebab.KebabServer;
 import com.uroria.kebab.entity.DataWatcher.WatchableField;
 import com.uroria.kebab.entity.DataWatcher.WatchableObjectType;
+import com.uroria.kebab.location.Location;
+import com.uroria.kebab.world.World;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -74,11 +76,11 @@ public abstract class Entity implements Sound.Emitter {
     }
 
     public Entity(EntityType type, UUID uuid, Location location) {
-        this(type, Limbo.getInstance().getNextEntityId(), uuid, location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        this(type, KebabServer.getInstance().getNextEntityId(), uuid, location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     public Entity(EntityType type, Location location) {
-        this(type, Limbo.getInstance().getNextEntityId(), UUID.randomUUID(), location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        this(type, KebabServer.getInstance().getNextEntityId(), UUID.randomUUID(), location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     public EntityType getType() {
@@ -108,16 +110,6 @@ public abstract class Entity implements Sound.Emitter {
 
     public void setCustomName(Component component) {
         this.customName = component;
-    }
-
-    @Deprecated
-    public void setCustomName(BaseComponent component) {
-        setCustomName(component == null ? null : BungeecordAdventureConversionUtils.toComponent(component));
-    }
-
-    @Deprecated
-    public void setCustomName(BaseComponent[] components) {
-        setCustomName(components == null ? null : BungeecordAdventureConversionUtils.toComponent(components));
     }
 
     public boolean isOnFire() {

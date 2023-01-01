@@ -13,16 +13,15 @@ public final class Tick {
     public Tick(KebabServer instance, int tps) {
         new Thread(() -> {
             tickingInterval = (int) Math.round(1000.0 / tps);
-
             while (instance.isRunning()) {
                 long start = System.currentTimeMillis();
                 tick.incrementAndGet();
-                instance.getPlayers().forEach(each -> {
-                    if (each.clientConnection.isReady()) {
+                instance.getPlayers().forEach(player -> {
+                    if (player.getClientConnection().isReady()) {
                         try {
-                            each.playerInteractManager.update();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            player.getPlayerInteractManager().update();
+                        } catch (IOException exception) {
+                            KebabServer.getInstance().getLogger().error("Error while trying to update player " + player.getName() + " on Tick " + getCurrentTick(), exception);
                         }
                     }
                 });
@@ -30,15 +29,14 @@ public final class Tick {
                     try {
                         world.update();
                     } catch (IllegalArgumentException | IllegalAccessException exception) {
-                        exception.printStackTrace();
+                        KebabServer.getInstance().getLogger().error("Error while trying to update world " + world.getName() + " on Tick " + getCurrentTick(), exception);
                     }
                 });
-
                 long end = System.currentTimeMillis();
                 try {
                     TimeUnit.MILLISECONDS.sleep(tickingInterval - (end - start));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException exception) {
+                    KebabServer.getInstance().getLogger().error("Error while trying to let Thread sleep on Tick " + getCurrentTick(), exception);
                 }
             }
         }).start();

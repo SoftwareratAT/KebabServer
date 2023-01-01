@@ -6,6 +6,7 @@ import com.uroria.kebab.entity.DataWatcher;
 import com.uroria.kebab.entity.LivingEntity;
 import com.uroria.kebab.location.Location;
 import com.uroria.kebab.network.ClientConnection;
+import com.uroria.kebab.network.protocol.PacketOut;
 import com.uroria.kebab.network.protocol.minecraft.play.out.PacketPlayOutGameState;
 import com.uroria.kebab.utils.MessageSignature;
 import com.uroria.kebab.utils.minecraft.GameMode;
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class KebabPlayer extends LivingEntity implements CommandSource, Audience, Player {
     public final ClientConnection clientConnection;
+    public final PlayerInteractManager playerInteractManager;
 
     protected String userName;
     protected GameMode gameMode;
@@ -50,7 +52,7 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         this.containerIdCounter = new AtomicInteger(1);
         //TODO PlayerInventory
         //TODO InventoryView
-        //TODO PlayerInteractManager
+        this.playerInteractManager = new PlayerInteractManager(this);
         this.watcher = new DataWatcher(this);
         this.watcher.update();
     }
@@ -126,11 +128,6 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     }
 
     @Override
-    public String getName() {
-        return this.userName;
-    }
-
-    @Override
     public boolean hasPermission(String permission) {
         return //TODO PERMISSION
     }
@@ -138,6 +135,16 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     @Override
     public void teleport(Location location) {
         //TODO TELEPORT METHOD
+    }
+
+    @Override
+    public ClientConnection getClientConnection() {
+        return this.clientConnection;
+    }
+
+    @Override
+    public PlayerInteractManager getPlayerInteractManager() {
+        return this.playerInteractManager;
     }
 
     @Override
@@ -167,6 +174,7 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         sendMessage(component);
     }
 
+    @Override
     public void disconnect(Component reason) {
         this.clientConnection.disconnect(reason);
     }
@@ -187,6 +195,11 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
 
     public void sendTitle(Component title, Component subtitle, Duration fadeIn, Duration stay, Duration fadeOut) {
 
+    }
+
+    @Override
+    public void sendPacket(PacketOut outgoingPacket) throws IOException {
+        this.clientConnection.sendPacket(outgoingPacket);
     }
 
     @Override
@@ -264,10 +277,12 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         this.gameMode = gameMode;
     }
 
+    @Override
     public GameMode getGameMode() {
         return gameMode;
     }
 
+    @Override
     public String getName() {
         return this.userName;
     }
