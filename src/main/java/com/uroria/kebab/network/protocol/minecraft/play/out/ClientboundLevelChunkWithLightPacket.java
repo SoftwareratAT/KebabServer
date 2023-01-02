@@ -1,15 +1,20 @@
 package com.uroria.kebab.network.protocol.minecraft.play.out;
 
 import com.uroria.kebab.network.protocol.PacketOut;
+import com.uroria.kebab.utils.Bits;
 import com.uroria.kebab.utils.DataTypeIO;
 import com.uroria.kebab.world.Environment;
+import com.uroria.kebab.world.GeneratedBlockDataMappings;
+import net.kyori.adventure.key.Key;
 import net.querz.mca.Chunk;
 import net.querz.mca.Section;
 import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.ListTag;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -134,7 +139,7 @@ public class ClientboundLevelChunkWithLightPacket extends PacketOut {
                     int shift = 64 % newBits;
                     int longsNeeded = (int) Math.ceil(4096 / (double) (64 / newBits));
                     for (int u = 64; u <= bits.length(); u += 64) {
-                        BitsUtils.shiftAfter(bits, u - shift, shift);
+                        Bits.shiftAfter(bits, u - shift, shift);
                     }
 
                     long[] formattedLongs = bits.toLongArray();
@@ -223,8 +228,9 @@ public class ClientboundLevelChunkWithLightPacket extends PacketOut {
             int z = each.getInt("z") % 16;
             output.writeByte(((x & 15) << 4) | (z & 15));
             output.writeShort(y);
-            Integer id = Registry.BLOCK_ENTITY_TYPE.getId(Key.key(chunk.getBlockStateAt(x, y, z).getString("Name")));
-            DataTypeIO.writeVarInt(output, id == null ? -1 : id);
+            //Integer id = Registry.BLOCK_ENTITY_TYPE.getId(Key.key(chunk.getBlockStateAt(x, y, z).getString("Name")));
+            //DataTypeIO.writeVarInt(output, id == null ? -1 : id);
+            DataTypeIO.writeVarInt(output, -1);
             DataTypeIO.writeCompoundTag(output, each);
         }
 

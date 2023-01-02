@@ -28,7 +28,7 @@ public class LightEngineBlock extends LightEngine {
 
     private void updateBlock(int x, int y, int z) {
         BlockState block = world.getBlock(x, y, z);
-        int lightLevel = getBlockLight(block);
+        int lightLevel = getBlockLightLevel(block);
         if (lightLevel > 0) {
             propergate(lightLevel, x, y, z);
         }

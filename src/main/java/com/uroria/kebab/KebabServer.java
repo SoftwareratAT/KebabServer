@@ -1,5 +1,6 @@
 package com.uroria.kebab;
 
+import com.google.common.reflect.ClassPath;
 import com.uroria.kebab.events.EventManager;
 import com.uroria.kebab.events.KebabEventManager;
 import com.uroria.kebab.file.FileConfiguration;
@@ -36,15 +37,33 @@ public final class KebabServer {
     private static KebabServer INSTANCE;
 
     public static void main(final String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        String address = null;
+        int port = -1;
         for (final String arg: args) {
             if (arg.equals("--help") || arg.equals("-h")) {
-                System.out.println("Documentation will come soon!");
-                System.exit(0);
+                System.out.println(" ");
+                System.out.println("-h --help : Show this");
+                System.out.println("-a:<address> --address:<address> : Override the address of the server");
+                System.out.println("-p:<port> --port:<port> : Override the port of the server");
+                System.out.println("-s --start : Start the server");
+                return;
+            }
+            if (arg.contains("--port:") || arg.contains("-p:")) {
+                port = Integer.parseInt(arg.replace("--port:", "").replace("-p:", ""));
+                continue;
+            }
+            if (arg.contains("--address:") || arg.contains("-a:")) {
+                address = arg.replace("--address:", "").replace("-a:", "");
+                continue;
+            }
+            if (arg.equals("--start") || arg.equals("-s")) {
+                System.out.println("Initializing...");
+                INSTANCE = new KebabServer(address, port);
                 return;
             }
         }
-        System.out.println("Initializing...");
-        INSTANCE = new KebabServer();
+        System.out.println(" ");
+        System.out.println("Please provide arguments! [--h; --help for help]");
     }
 
     public static KebabServer getInstance() {
@@ -60,6 +79,7 @@ public final class KebabServer {
     public static int SERVER_PROTOCOL = 761;
     private final int viewDistance;
 
+    private final UnsafeServer unsafe;
     private final AtomicBoolean running;
     private final ServerConnection server;
     private final ConsoleLogger consoleLogger;
@@ -71,28 +91,48 @@ public final class KebabServer {
     private final KebabPluginManager pluginManager;
     private final KebabEventManager eventManager;
     private final AtomicInteger entityIdCount = new AtomicInteger();
-    private final Map<UUID, KebabPlayer> players;
+    final Map<UUID, KebabPlayer> players;
     private final Collection<World> worlds;
 
-    public KebabServer() throws IOException, NumberFormatException, ClassNotFoundException, InterruptedException {
-        System.out.println("Running Kebab server " + SERVER_VERSION + ", Protocol " + SERVER_PROTOCOL);
+    public KebabServer(String serverAddress, int port) throws IOException, NumberFormatException, ClassNotFoundException, InterruptedException {
         this.running = new AtomicBoolean(true);
         this.consoleLogger = new ConsoleLogger();
+        getLogger().info("Running Kebab server " + SERVER_VERSION + ", Protocol " + SERVER_PROTOCOL);
         getLogger().info("Booting up...");
+        this.players = new HashMap<>();
+        this.worlds = new ArrayList<>();
+        this.unsafe = new UnsafeServer(this);
         this.scheduler = new KebabScheduler();
-        this.serverConfig = new FileConfiguration(new File("server.yml"));
-        int tps = this.serverConfig.get("ticks-per-second", Integer.class);
+        File config = new File("server.yml");
+        if (!config.exists()) {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("server.yml");
+            if (inputStream == null) {
+                getLogger().error("Config not found in ClassLoader!");
+                System.exit(4);
+            }
+            Files.copy(inputStream, config.toPath());
+            config = new File("server.yml");
+        }
+        this.serverConfig = new FileConfiguration(config);
+        int tps = this.serverConfig.getInt("ticks-per-second");
         if (tps == 0) {
             getLogger().error("TPS null! Using a tps of 10 now!");
             tps = 10;
         }
-        int viewDistance = this.serverConfig.get("view-distance", Integer.class);
+        int viewDistance = this.serverConfig.getInt("view-distance");
         if (viewDistance == 0) {
             getLogger().error("ViewDistance null! Using a ViewDistance value of 6 now!");
             this.viewDistance = 6;
         } else this.viewDistance = viewDistance;
+        loadAllPackets();
         this.pluginFolder = new File("plugins");
+        if (!this.pluginFolder.exists()) {
+            if (this.pluginFolder.mkdir()) getLogger().info("Created empty plugin folder.");
+        }
         this.internalDataFolder = new File("internal_data");;
+        if (!this.internalDataFolder.exists()) {
+            if (this.internalDataFolder.mkdir()) getLogger().info("Created internal_data folder.");
+        }
         this.tick = new Tick(this, tps);
         this.pluginManager = new KebabPluginManager(this.pluginFolder);
         try {
@@ -104,14 +144,32 @@ public final class KebabServer {
             getLogger().error("Error while trying to load plugins", exception);
         }
         this.eventManager = new KebabEventManager();
-        this.server = new ServerConnection(this.serverConfig.get("server-ip", String.class), this.serverConfig.get("server-port", Integer.class));
-        this.players = new HashMap<>();
-        this.worlds = new ArrayList<>();
+        if (serverAddress == null) serverAddress = this.serverConfig.get("server-ip", String.class);
+        if (port == -1) port = this.serverConfig.getInt("server-port");
+        this.server = new ServerConnection(serverAddress, port);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this::stopServer));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::terminate));
 
         getLogger().info("Server online!");
-        getLogger().info("Running on " + this.serverConfig.get("server-ip", String.class) + " on port " + this.serverConfig.get("server-port", Integer.class));
+    }
+
+    private void loadAllPackets() throws IOException, ClassNotFoundException {
+        getLogger().info("Loading all packets...");
+        Collection<String> packages = new ArrayList<>();
+        final String prefix = "com.uroria.kebab.network.protocol.minecraft";
+        packages.add(prefix + ".handshake.in");
+        packages.add(prefix + ".login.in");
+        packages.add(prefix + ".login.out");
+        packages.add(prefix + ".play.in");
+        packages.add(prefix + ".play.out");
+        for (String pack : packages) {
+            ClassPath pathToClass = ClassPath.from(this.getClass().getClassLoader());
+            for (ClassPath.ClassInfo classInfo : pathToClass.getTopLevelClasses(pack)) {
+                Class<?> clazz = Class.forName(classInfo.getName(), true, getClass().getClassLoader());
+                getLogger().info("Loaded packet " + clazz.getSimpleName());
+            }
+        }
+        getLogger().info("Finished loading packets!");
     }
 
     public void stopServer() {
@@ -252,5 +310,9 @@ public final class KebabServer {
 
     public FileConfiguration getServerConfig() {
         return this.serverConfig;
+    }
+
+    public UnsafeServer getUnsafe() {
+        return unsafe;
     }
 }

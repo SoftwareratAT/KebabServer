@@ -63,6 +63,7 @@ public class Channel implements AutoCloseable {
             }
             size = -1;
         } while (packet == null);
+        System.out.println("return");
         return packet;
     }
 

@@ -146,7 +146,7 @@ public final class PacketPlayOutPlayerInfo extends PacketOut {
             public static class PlayerSkinProperty {
                 private final String skin;
                 private final String signature;
-                private PlayerSkinProperty(String skin, String signature) {
+                public PlayerSkinProperty(String skin, String signature) {
                     this.skin = skin;
                     this.signature = signature;
                 }

@@ -1,6 +1,10 @@
 package com.uroria.kebab.utils;
 
 import com.uroria.kebab.item.ItemStack;
+import com.uroria.kebab.location.BlockFace;
+import com.uroria.kebab.location.MovingObjectPositionBlock;
+import com.uroria.kebab.location.Vector;
+import com.uroria.kebab.Registry;
 import com.uroria.kebab.utils.minecraft.BlockPosition;
 import net.kyori.adventure.key.Key;
 import net.querz.nbt.io.NBTInputStream;
@@ -43,7 +47,7 @@ public final class DataTypeIO {
     }
 
     public static void writeBlockHitResult(DataOutputStream out, MovingObjectPositionBlock movingobjectpositionblock) throws IOException {
-        BlockPosition blockposition = movingobjectpositionblock.getBlockPos();
+        BlockPosition blockposition = movingobjectpositionblock.getBlockPosition();
 
         writeBlockPosition(out, blockposition);
         writeVarInt(out, movingobjectpositionblock.getDirection().ordinal());

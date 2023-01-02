@@ -3,11 +3,12 @@ package com.uroria.kebab.player;
 import com.uroria.kebab.KebabServer;
 import com.uroria.kebab.commands.CommandSource;
 import com.uroria.kebab.entity.DataWatcher;
+import com.uroria.kebab.entity.EntityType;
 import com.uroria.kebab.entity.LivingEntity;
 import com.uroria.kebab.location.Location;
 import com.uroria.kebab.network.ClientConnection;
 import com.uroria.kebab.network.protocol.PacketOut;
-import com.uroria.kebab.network.protocol.minecraft.play.out.PacketPlayOutGameState;
+import com.uroria.kebab.network.protocol.minecraft.play.out.*;
 import com.uroria.kebab.utils.MessageSignature;
 import com.uroria.kebab.utils.minecraft.GameMode;
 import com.uroria.kebab.entity.DataWatcher.WatchableField;
@@ -44,8 +45,8 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     protected byte mainHand = 1;
 
 
-    public KebabPlayer(ClientConnection clientConnection, String userName, UUID uuid, int entityId, Location location, PlayerInteractManager) throws IllegalArgumentException, IllegalAccessException {
-        super(EntityType.PLAYER, entityId, uuid, location.getWorld(), location.getX(), location.getY(), location.getZ());
+    public KebabPlayer(ClientConnection clientConnection, String userName, UUID uuid, int entityId, Location location) throws IllegalArgumentException, IllegalAccessException {
+        super(EntityType.PLAYER, uuid, location);
         this.clientConnection = clientConnection;
         this.userName = userName;
         this.entityId = entityId;
@@ -68,7 +69,7 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     public void setSelectedSlot(byte slot) {
         if (slot == selectedSlot) return;
         try {
-
+            sendPacket(null);
         } catch (IOException exception) {
             KebabServer.getInstance().getLogger().error("Error while trying to change " + userName + " selected slot!", exception);
         }
@@ -107,17 +108,15 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         this.mainHand = mainHand;
     }
 
-    @Override
     public DataWatcher getDataWatcher() {
         return this.watcher;
     }
 
     @Override
     public boolean isValid() {
-        return //TODO RETURN VALUE
+        return KebabServer.getInstance().getPlayers().contains(this);
     }
 
-    @Override
     public void remove() {
 
     }
@@ -129,7 +128,7 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
 
     @Override
     public boolean hasPermission(String permission) {
-        return //TODO PERMISSION
+        return false;//TODO PERMISSION
     }
 
     @Override
@@ -186,15 +185,17 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     }
 
     public void setPlayerListHeaderFooter(Component headerComponent, Component footerComponent) {
-        try {
-            //TODO Tab packet
-        } catch (IOException exception) {
-            KebabServer.getInstance().getLogger().error("Error while trying to send PlayerListHeaderFooter to " + userName, exception);
-        }
+        //try {
+        //
+        //        } catch (IOException exception) {
+        //            KebabServer.getInstance().getLogger().error("Error while trying to send PlayerListHeaderFooter to " + userName, exception);
+        //        }
     }
 
     public void sendTitle(Component title, Component subtitle, Duration fadeIn, Duration stay, Duration fadeOut) {
-
+        sendTitlePart(TitlePart.TITLE, title);
+        sendTitlePart(TitlePart.SUBTITLE, subtitle);
+        sendTitlePart(TitlePart.TIMES, Title.Times.times(fadeIn, stay, fadeOut));
     }
 
     @Override
@@ -206,7 +207,8 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     public <T> void sendTitlePart(TitlePart<T> part, T value) {
         if (part.equals(TitlePart.TITLE)) {
             try {
-                //TODO send title
+                ClientboundSetTitleTextPacket titleTextPacket = new ClientboundSetTitleTextPacket((Component) value);
+                sendPacket(titleTextPacket);
             } catch (IOException exception) {
                 KebabServer.getInstance().getLogger().error("Error while trying to send title to " + userName, exception);
             }
@@ -214,7 +216,8 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         }
         if (part.equals(TitlePart.SUBTITLE)) {
             try {
-                //TODO send subtitle
+                ClientboundSetSubtitleTextPacket subtitleTextPacket = new ClientboundSetSubtitleTextPacket((Component) value);
+                sendPacket(subtitleTextPacket);
             } catch (IOException exception) {
                 KebabServer.getInstance().getLogger().error("Error while trying to send subtitle to " + userName, exception);
             }
@@ -223,7 +226,8 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         if (part.equals(TitlePart.TIMES)) {
             try {
                 Title.Times times = (Title.Times) value;
-                //TODO Send times packet
+                ClientboundSetTitlesAnimationPacket titlesAnimationPacket = new ClientboundSetTitlesAnimationPacket(Math.round(times.fadeIn().getSeconds() * 20), Math.round(times.stay().getSeconds() * 20), Math.round(times.fadeOut().getSeconds() * 20));
+                sendPacket(titlesAnimationPacket);
             } catch (IOException exception) {
                 KebabServer.getInstance().getLogger().error("Error while trying to send title times to " + userName, exception);
             }
@@ -233,7 +237,8 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     @Override
     public void clearTitle() {
         try {
-
+            ClientboundClearTitlesPacket clearTitlesPacket = new ClientboundClearTitlesPacket(false);
+            sendPacket(clearTitlesPacket);
         } catch (IOException exception) {
             KebabServer.getInstance().getLogger().error("Error while trying to clear title of " + userName, exception);
         }
@@ -242,7 +247,8 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
     @Override
     public void resetTitle() {
         try {
-
+            ClientboundClearTitlesPacket clearTitlesPacket = new ClientboundClearTitlesPacket(true);
+            sendPacket(clearTitlesPacket);
         } catch (IOException exception) {
             KebabServer.getInstance().getLogger().error("Error while trying to reset title of " + userName, exception);
         }
@@ -254,7 +260,7 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         //TODO Inventory update
     }
 
-    public void openInventory(Inventory inventory) {
+    public void openInventory() {
         //TODO Open inventory
     }
 
@@ -269,7 +275,7 @@ public class KebabPlayer extends LivingEntity implements CommandSource, Audience
         if (!this.gameMode.equals(gameMode)) {
             try {
                 PacketPlayOutGameState gameState = new PacketPlayOutGameState(3, gameMode);
-
+                sendPacket(gameState);
             } catch (IOException exception) {
                 KebabServer.getInstance().getLogger().error("Error while trying to change GameMode of " + this.userName, exception);
             }

@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public final class ConsoleLogger implements Logger {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd - HH:mm:ss");
+
+    private String prefix;
+
     private enum Level {
         INFO("[INFO]"),
         WARNING("[WARNING]"),
@@ -12,22 +16,23 @@ public final class ConsoleLogger implements Logger {
         private final String prefix;
 
         Level(String levelPrefix) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss");
-            LocalDateTime currentTime = LocalDateTime.now();
-            String time = formatter.format(currentTime);
-            this.prefix = time + " " + levelPrefix;
+            this.prefix =levelPrefix;
         }
+    }
+
+    private static String getTime() {
+        return FORMATTER.format(LocalDateTime.now());
     }
 
     @Override
     public void info(String text) {
-        System.out.println(Level.INFO.prefix + " " + text);
+        System.out.println(getTime() + " " + Level.INFO.prefix + " " + text);
 
     }
 
     @Override
     public void warn(String text) {
-        System.out.println(Level.WARNING.prefix + " " + text);
+        System.out.println(getTime() + " " + Level.WARNING.prefix + " " + text);
     }
 
     @Override
@@ -37,7 +42,7 @@ public final class ConsoleLogger implements Logger {
 
     @Override
     public void error(String text, Throwable throwable) {
-        System.out.println(Level.ERROR.prefix + " " + text);
+        System.out.println(getTime() + " " + Level.ERROR.prefix + " " + text);
         if (throwable != null) throwable.printStackTrace();
     }
 }

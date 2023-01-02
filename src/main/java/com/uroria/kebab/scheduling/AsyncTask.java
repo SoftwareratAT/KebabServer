@@ -2,7 +2,7 @@ package com.uroria.kebab.scheduling;
 
 import com.uroria.kebab.KebabServer;
 import com.uroria.kebab.logger.Logger;
-import jdk.internal.net.http.common.Pair;
+import com.uroria.kebab.utils.scheduler.Pair;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -89,8 +89,8 @@ public final class AsyncTask<T> {
 
     private void processFuture(CompletableFuture<? super T> future, Integer counter) {
         Pair<T, Throwable> result = execute(counter).join();
-        if (result.second != null) future.completeExceptionally(result.second);
-        else future.complete(result.first);
+        if (result.second() != null) future.completeExceptionally(result.second());
+        else future.complete(result.first());
     }
 
 

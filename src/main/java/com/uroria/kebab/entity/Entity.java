@@ -8,7 +8,6 @@ import com.uroria.kebab.world.World;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.chat.BaseComponent;
 
 import java.util.UUID;
 
@@ -39,8 +38,8 @@ public abstract class Entity implements Sound.Emitter {
     protected boolean silent = false;
     @WatchableField(MetadataIndex = 5, WatchableObjectType = WatchableObjectType.BOOLEAN)
     protected boolean noGravity = false;
-    @WatchableField(MetadataIndex = 6, WatchableObjectType = WatchableObjectType.POSE)
-    protected Pose pose = Pose.STANDING;
+    //@WatchableField(MetadataIndex = 6, WatchableObjectType = WatchableObjectType.POSE)
+    //protected Pose pose = Pose.STANDING;
     @WatchableField(MetadataIndex = 7, WatchableObjectType = WatchableObjectType.VARINT)
     protected int frozenTicks = 0;
 
@@ -65,6 +64,10 @@ public abstract class Entity implements Sound.Emitter {
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    public DataWatcher getDataWatcher() {
+        return world.getDataWatcher(this);
     }
 
     public Entity(EntityType type, UUID uuid, World world, double x, double y, double z, float yaw, float pitch) {
@@ -200,13 +203,13 @@ public abstract class Entity implements Sound.Emitter {
         this.noGravity = !gravity;
     }
 
-    public Pose getPose() {
-        return pose;
-    }
+    //public Pose getPose() {
+    //    return pose;
+    //}
 
-    public void setPose(Pose pose) {
-        this.pose = pose;
-    }
+    //public void setPose(Pose pose) {
+    //    this.pose = pose;
+    //}
 
     public World getWorld() {
         return world;

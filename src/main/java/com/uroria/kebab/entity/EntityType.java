@@ -1,5 +1,7 @@
 package com.uroria.kebab.entity;
 
+import com.uroria.kebab.player.KebabPlayer;
+import com.uroria.kebab.player.Player;
 import net.kyori.adventure.key.Key;
 
 import java.util.HashMap;
@@ -7,7 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public enum EntityType {
-    ;
+    PLAYER("player", KebabPlayer.class, 106, false),
+    UNKNOWN(null, null, -1, false);
     private final String name;
     private final Class<? extends Entity> clazz;
     private final short typeId;

@@ -3,8 +3,11 @@ package com.uroria.kebab.network.protocol.minecraft.play.out;
 import com.uroria.kebab.entity.DataWatcher.WatchableObjectType;
 import com.uroria.kebab.entity.DataWatcher.WatchableObject;
 import com.uroria.kebab.entity.Entity;
+import com.uroria.kebab.entity.Pose;
 import com.uroria.kebab.network.protocol.PacketOut;
 import com.uroria.kebab.utils.DataTypeIO;
+import com.uroria.kebab.utils.minecraft.BlockPosition;
+import com.uroria.kebab.utils.minecraft.Rotation3f;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 

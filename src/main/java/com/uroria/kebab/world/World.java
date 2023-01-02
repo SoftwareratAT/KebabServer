@@ -207,21 +207,21 @@ public class World {
         return Collections.unmodifiableSet(entities.keySet());
     }
 
-    public Entity spawnEntity(EntityType type, Location location) {
-        if (!location.getWorld().equals(this)) {
-            throw new IllegalArgumentException("Location not in world.");
-        }
-        Entity entity;
-        switch (type) {
-            case ARMOR_STAND:
-                entity = new ArmorStand(location);
-                break;
-            default:
-                throw new UnsupportedOperationException("This EntityType cannot be summoned.");
-        }
-        entities.put(entity, new DataWatcher(entity));
-        return entity;
-    }
+    //public Entity spawnEntity(EntityType type, Location location) {
+    //        if (!location.getWorld().equals(this)) {
+    //            throw new IllegalArgumentException("Location not in world.");
+    //        }
+    //        Entity entity;
+    //        switch (type) {
+    //            case ARMOR_STAND:
+    //                entity = new ArmorStand(location);
+    //                break;
+    //            default:
+    //                throw new UnsupportedOperationException("This EntityType cannot be summoned.");
+    //        }
+    //        entities.put(entity, new DataWatcher(entity));
+    //        return entity;
+    //    }
 
     public Entity addEntity(Entity entity) {
         if (entity.getWorld().equals(this)) {
@@ -248,7 +248,7 @@ public class World {
         }
     }
 
-    protected DataWatcher getDataWatcher(Entity entity) {
+    public DataWatcher getDataWatcher(Entity entity) {
         return entities.get(entity);
     }
 
