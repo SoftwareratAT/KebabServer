@@ -5,16 +5,11 @@ import com.uroria.kebab.events.Event;
 import com.uroria.kebab.player.Player;
 import com.uroria.kebab.player.KebabPlayer;
 
-public class PlayerJoinEvent extends Event implements Cancellable {
-    private final Player player;
+public class PlayerJoinEvent extends PlayerEvent implements Cancellable {
     private boolean cancelled;
 
     public PlayerJoinEvent(KebabPlayer player) {
-        this.player = player;
-    }
-
-    public Player getPlayer() {
-        return player;
+        super(player);
     }
 
     @Override

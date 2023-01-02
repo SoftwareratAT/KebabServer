@@ -19,6 +19,7 @@ public class FileConfiguration {
     public FileConfiguration(File file) throws IOException {
         if (file.exists()) {
             InputStreamReader reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
+            reloadConfig(reader);
             reader.close();
         } else {
             mapping = new LinkedHashMap<>();
@@ -64,6 +65,15 @@ public class FileConfiguration {
         } catch (Exception exception) {
             return null;
         }
+    }
+
+    public int getInt(String key) {
+        String[] tree = key.split("\\.");
+        int i = 0;
+        for (String s : tree) {
+            i = (int) mapping.get(s);
+        }
+        return i;
     }
 
     @SuppressWarnings("unchecked")

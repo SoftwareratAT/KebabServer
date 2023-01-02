@@ -9,8 +9,7 @@ import com.uroria.kebab.utils.minecraft.GameMode;
 import com.uroria.kebab.world.World;
 import net.kyori.adventure.text.Component;
 
-public class PlayerPostLoginEvent extends Event implements Cancellable {
-    private final Player player;
+public class PlayerPostLoginEvent extends PlayerEvent implements Cancellable {
     private GameMode gameMode;
     private World spawnWorld;
     private Location spawnLocation;
@@ -24,7 +23,7 @@ public class PlayerPostLoginEvent extends Event implements Cancellable {
     private Component reason;
 
     public PlayerPostLoginEvent(KebabPlayer player, GameMode gameMode, World spawnWorld, Location spawnLocation, int viewDistance, int simulationDistance, boolean reducedDebugInfo, boolean enableRespawnScreen, boolean hardcore, Component serverBrand, boolean cancelled, Component reason) {
-        this.player = player;
+        super(player);
         this.gameMode = gameMode;
         this.spawnWorld = spawnWorld;
         this.spawnLocation = spawnLocation;
@@ -36,10 +35,6 @@ public class PlayerPostLoginEvent extends Event implements Cancellable {
         this.serverBrand = serverBrand;
         this.cancelled = cancelled;
         this.reason = reason;
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 
     public GameMode getGameMode() {

@@ -6,19 +6,14 @@ import com.uroria.kebab.events.Event;
 import com.uroria.kebab.player.Player;
 import net.kyori.adventure.text.Component;
 
-public class PlayerLoginEvent extends Event implements Cancellable {
-    private final Player player;
+public class PlayerLoginEvent extends PlayerEvent implements Cancellable {
     private boolean cancelled;
     private Component reason;
 
     public PlayerLoginEvent(KebabPlayer player, boolean cancelled, Component reason) {
-        this.player = player;
+        super(player);
         this.cancelled = cancelled;
         this.reason = reason;
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 
     public Component getReason() {
