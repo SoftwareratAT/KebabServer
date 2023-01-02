@@ -1,5 +1,5 @@
 # Kebab 1.19.3
-## _An open-source Minecraft backend server_
+## _An open-source Minecraft backend server (Still in developement)_
 
 Kebab is an lightweight Minecraft backend server solution providing many features for developers.
 Note: **Kebab is not a standalone service!** You need some kind of proxy like Velocity that runs in front of Kebab!
