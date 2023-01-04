@@ -38,7 +38,7 @@ Make sure to replace "VERSION" and "PATH/TO/THE/JAR" with the right information!
 
 1. Install Git if not already installed and clone the Kebab repo into a folder
 ```sh
-git clone https://github.com/Uroria/KebabServer/archive/refs/heads/main.zip .
+git clone https://github.com/Uroria/KebabServer.git .
 ```
 2. Install Maven if not already installed and build the project
 ```sh
